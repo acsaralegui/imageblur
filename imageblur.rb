@@ -1,50 +1,27 @@
-
-class Image
+ class Image
   attr_reader :blurred_image
   
-  def initialize(image_array)
-    if image_array.empty?
-      puts "Your image is empty"
-    end
-    @image_array = image_array
-      
+  def initialize(image)
+    @image = image   
   end
-  
+
   def output_image
-    @image_array.each do |element|   
-      element.each do |sub_element|
-        print sub_element             
-      end
-      puts
+    @image.each do |image|
+      puts image.join
     end
   end
+end
 
-  def blur(distance)
-    
-    distance.times do      
-      blur_image            
-    end
-    
-    
-  end   
-  
-  def image_length                
-    @image_array.length
-  end
-
-  def row_length                  
-    @image_array[0].length
-  end
-  
-end     
-    
+   
 image = Image.new([
   [0, 0, 0, 0],
   [0, 1, 0, 0],
   [0, 0, 0, 1],
   [0, 0, 0, 0]
 ])
-
-puts "imageblur"
+puts "imageblur 1"
 image.output_image
-puts
+
+
+
+

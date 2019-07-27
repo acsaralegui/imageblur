@@ -1,66 +1,66 @@
-ruby imageblur3.#!/usr/bin/env ruby -wKU class Apple
-
 class Image
 
-  
   def initialize(image)
     @image = image
-    @row_length = image.length
-    @col_length = image[0].length   
   end
 
   def output_image
     @image.each do |row|
-      row.each do |pixel|
-        print pixel, ' '
-      end 
-      puts    
-    end 
-  end 
-
-  def blur(row_index, col_index)
-    # we are at the upper left corner
-    @image[row_index -1][col_index] = 1 unless row_index == 0
-     # we are at the upper right corner
-    @image[row_index +1][col_index] = 1 unless row_index >= @row_length-1
-     # we are at the lower left corner
-    @image[row_index][col_index -1] = 1 unless col_index == 0
-    # we are at the lower right corner
-    @image[row_index][col_index +1] = 1 unless col_index >= @col_length-1
+      puts row.join
+    end
   end
 
-  def ones
-    one_pixel = []
+  def blur!(blur_depth=1)
+    blur_depth.times do
+      blur_coords!
+    end
+  end
 
-    @image.each_with_index do |row_array, row_index|
-        row_array.each_with_index do |cell, col_index|
-        if cell == 1
-          one_pixel << [row_index, col_index]
-        end
+
+  private
+
+    def blur_coords!
+      blur_coords = []
+      @image.each_with_index do |row, i|
+        # row == [0, 1, 0, 0] i == 1
+        row.each_with_index do |value, value_i|
+          # value == 1, value_i == 1
+          blur_coords << [i, value_i] if value == 1
+           # blur_coords == [[1,1],[2,3]]
+        end      
       end
-    end    
-    one_pixel  
-  end
 
+      blur_coords.each do |coord|
+        # coord == [1,1]; and then coord [2,3]
+        x = coord[0]
+        y = coord[1]
+        @image[x][y + 1] = 1 if y + 1 <= @image[x].length - 1
+        # y is the inner array. It moves to the right 1 since we are adding 1 to it 
+        @image[x][y - 1] = 1 if y - 1 >= 0
+        # y is the inner array. It moves to the left 1 since we are subtracting 1 from it
+        @image[x + 1][y] = 1 if x + 1 <= @image.length - 1
+        # x is the name of the row in the array. We go down 1 since we are adding 1 to it
+        @image[x - 1][y] = 1 if x - 1 >= 0
+        # x is the name of the row in the array. We go up 1 since we are subtracting 1 to it
+      end
+    end
 
-  def transform
-    image_coords = ones
-
-    image_coords.each do |x, y|
-      blur(x, y)
-    end  
-  end
 end
 
-
 image = Image.new([
-  [0, 0, 0, 0],
-  [0, 1, 0, 0],
-  [0, 0, 0, 1],
-  [0, 0, 0, 0]
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0],
+  [0, 1, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 1]
 ])
-
-image.output_image
 puts "imageblur 3"
-image.transform
+image.blur!(2)
 image.output_image
+
+
+
+#variables
+#functions
+#calling
